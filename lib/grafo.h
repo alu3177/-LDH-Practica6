@@ -4,6 +4,7 @@
 
 using namespace std;
 
+const unsigned NOERROR = 0;
 const unsigned UERROR = 65000;
 const int MAXINT = 1000000;
 

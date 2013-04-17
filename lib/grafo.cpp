@@ -84,7 +84,7 @@ int Grafo::ParseFile(char nombrefichero[]){
         cerr << "Error abriendo el fichero " << nombrefichero << endl;
         return UERROR;  // TODO: ¿Es este error?
     }
-    return 0;
+    return NOERROR;
 }
 
 // MostrarLista
