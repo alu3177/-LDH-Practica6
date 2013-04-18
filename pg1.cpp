@@ -32,6 +32,7 @@ void CargarGrafo(){
     }
     // Actualización del menu
     // TODO: Borrar "items" antes de volver a meter más
+    menu->ClearItems();
     menu->AddItem("2 Mostrar informacion basica del grafo", &InfoGrafo);
     if (g->dirigido == 0){
         menu->AddItem("3 Mostrar lista de adyacencia del grafo", &InfoGrafo);

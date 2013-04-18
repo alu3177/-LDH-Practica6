@@ -23,6 +23,10 @@ class Menu{
         delete(my_items);
         items.clear();
     }
+    void ClearItems(){
+        items.clear();
+        funciones->clear();
+    }
     void AddItem(const char item[], T funcion){
         UnloadItems();
         items.push_back(item);
