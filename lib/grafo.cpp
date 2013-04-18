@@ -16,8 +16,8 @@ void Grafo::Actualizar(char nombrefichero[], int &errorapertura){
 
 // Info_Grafo
 void Grafo::Info_Grafo(){
-    dirigido == 0 ? cout << "Grafo NO DIRIGIDO" << endl : cout << "Grafo DIRIGIDO" << endl;
-    cout << "Número de nodos = " << n << endl;
+    dirigido == 0 ? cout << "Grafo NO DIRIGIDO" : cout << "Grafo DIRIGIDO";
+    cout << endl << "Número de nodos = " << n << endl;
     cout << "Número de ";
     dirigido == 0 ? cout << "aristas = " : cout << "arcos = ";
     cout << m << endl;
@@ -26,9 +26,14 @@ void Grafo::Info_Grafo(){
 // Mostrar_Listas
 // TODO: Preguntar lo que debe hacer ...
 void Grafo::Mostrar_Listas(int l){
-    MostrarLista(LS);
-    cout << "################" << endl;
-    MostrarLista(LP);
+    switch (l){
+        case 0:
+            MostrarLista(LS);
+            break;
+        case 1:
+            MostrarLista(LP);
+            break;
+    }
 }
 
 // DFS
