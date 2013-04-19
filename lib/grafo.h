@@ -28,46 +28,10 @@ class Grafo{
     void Mostrar_Listas(int l);
     void ListaPredecesores();
     void ComponentesConexas();
-    void dfs(unsigned i, vector<bool> &visitado);
     ~Grafo() { Clear(); }
   private:
     void Clear();
     int ParseFile(char nombrefichero[]);  // Devuelve el posible "errorapertura"
-    void MostrarLista(const vector<LA_nodo> &lista);
+    void MostrarLista(string symbol, const vector<LA_nodo> &lista);
+    void dfs(unsigned i, vector<bool> &visitado, vector<unsigned> &conexas);
 };
-
-
-/*
-
-    Usar un SET de la stl, para la "bolsa"
-    // Recorrido
-
-    limpiar marcas
-    vacio bolsa
-
-    marcar[1]
-    meto_en_bolsa(1)
-
-    Mientras bolsa no vacía{
-        e = saco_de_bolsa
-        para todo j € adyacente(e) {
-            si j no marcado{
-                marcar[j]
-                meter_en_bolsa(j)
-            }
-        }
-    }
-
-*/
-
-
-// EL orden de recorrido del WFS (Primero en anchura) es irrelevante
-// WFS es como el recorrido de arriba, pero con una cola (FIFO) en vez de bolsa (en la que da igual el orden d añadir nodos del mismo nivel)
-// Va "por niveles" de nodos, y cada nivel es el camino dsd el nodo inicial hasta el nodo actual
-
-
-// IDEM con pila (LIFO) => DFS
-
-
-// Para calcular componentes conexas:
-// Hacer dfs => Si hay nodos sin visitar, Repeat esta linea

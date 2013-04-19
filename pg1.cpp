@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string.h>
 #include <vector>
 
 #include "lib/menu.h"
@@ -11,11 +12,31 @@ typedef void (*tfuncion)(); // Puntero a función que recibe 0 argumentos y no d
 static Grafo* g;
 static Menu<tfuncion> *menu;
 
+// Conjunto de funciones asociadas a cada posible opción del menu
 void CargarGrafo();
 void InfoGrafo();
 void VerSucesores();
 void VerPredecesores();
+void VerComponentesConexas();
 
+// Recarga los items del menu, en función de si estamos ante un grafo dirigido o no
+void RefreshMenu(char fname[]){
+    string desc = "Grafo \"";
+    desc += fname;
+    desc += "\" abierto.";
+    menu->SetDescripcion(desc);
+    menu->ClearItems();
+    menu->AddItem("1 Cargar grafo desde un fichero", &CargarGrafo);
+    menu->AddItem("2 Mostrar informacion basica del grafo", &InfoGrafo);
+    if (g->dirigido == 0){
+        menu->AddItem("3 Mostrar lista de adyacencia del grafo", &VerSucesores);
+        menu->AddItem("4 Mostrar componentes conexas del grafo", &VerComponentesConexas);
+    }else if (g->dirigido == 1){
+        menu->AddItem("3 Mostrar lista de sucesores del grafo", &VerSucesores);
+        menu->AddItem("4 Mostrar lista de predecesores del grafo", &VerPredecesores);
+    }
+}
+// Conjunto de funciones asociadas a cada posible opción del menu
 void CargarGrafo(){
     // Carga del fichero
     char fname[32];
@@ -30,17 +51,7 @@ void CargarGrafo(){
         delete(g);
         g = new Grafo(fname, openstatus);
     }
-    // Actualización del menu
-    // TODO: Borrar "items" antes de volver a meter más
-    menu->ClearItems();
-    menu->AddItem("2 Mostrar informacion basica del grafo", &InfoGrafo);
-    if (g->dirigido == 0){
-        menu->AddItem("3 Mostrar lista de adyacencia del grafo", &InfoGrafo);
-        menu->AddItem("4 Mostrar componentes conexas del grafo", &InfoGrafo);
-    }else if (g->dirigido == 1){
-        menu->AddItem("3 Mostrar lista de sucesores del grafo", &VerSucesores);
-        menu->AddItem("4 Mostrar lista de predecesores del grafo", &VerPredecesores);
-    }
+    RefreshMenu(fname);
 }
 void InfoGrafo(){
     if (g != NULL){
@@ -52,7 +63,8 @@ void InfoGrafo(){
 }
 void VerSucesores(){
     if (g != NULL){
-        cout << "Lista de sucesores del grafo:" << endl << endl;
+        g->dirigido ? cout << "Lista de sucesores del grafo:" : cout << "Lista de adyacencia del grafo:";
+        cout << endl << endl;
         g->Mostrar_Listas(0);
     }else{
         cout << "[ERROR] NO hay ningún grafo cargado" << endl;
@@ -67,25 +79,26 @@ void VerPredecesores(){
         cout << "[ERROR] NO hay ningún grafo cargado" << endl;
     }
 }
+void VerComponentesConexas(){
+    if (g != NULL){
+        cout << "Componentes conexas del grafo:" << endl << endl;
+        g->ComponentesConexas();
+    }else{
+        cout << "[ERROR] NO hay ningún grafo cargado" << endl;
+    }
+}
             
-            
+        
 int main(){
-    
+    // TODO: Hacer otro constructor para construir un menu pasándole sólo un item inicial
     vector<const char*> items;
     items.push_back("1 Cargar grafo desde un fichero");
-    /*
-    items.push_back("3 Mostrar lista de sucesores del grafo");
-    items.push_back("4 Mostrar lista de predecesores del grafo");
-    */
     vector<tfuncion> *funciones = new vector<tfuncion>;
     funciones->push_back(&CargarGrafo);
-    /*
-    funciones->push_back(&InfoGrafo);
-    funciones->push_back(&VerSucesores);
-    funciones->push_back(&VerPredecesores);
-    */
-    char titulo[] = {"OPTIMIZACION 2013 - Practica GRAFOS 1  --  Fernando G L-P"};
-    menu = new Menu<tfuncion>(titulo, items, funciones);
+
+    string titulo = "OPTIMIZACION 2013 - Practica GRAFOS 1  --  Fernando G L-P";
+    string desc = "Ningún grafo abierto.";
+    menu = new Menu<tfuncion>(titulo, desc, items, funciones);
     menu->Run();
         
     delete(menu);
