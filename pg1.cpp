@@ -1,3 +1,21 @@
+/*
+ * Asignatura: Optimización 2013 - Grado en Ingeniería Informática
+ * Actividad: Almacenamiento en la clase GRAFO (Práctica grafos 1)
+ * Autor: Fernando González López - Peñalver (alu0100256543)
+ * 
+ * Descripción:
+ * El objetivo de esta actividad es escribir un programa que gestione
+ * la carga de los datos de un grafo a partir de las estructuras de
+ * sucesores o predecesores, en el caso de los grafos dirigidos, y con
+ * las adyacencias, en el caso de los grafos no dirigidos. Usaremos la 
+ * clase GRAFO que, desde esta primera actividad, estará dotado de lo
+ * esencial para poder codificar los grafos y trabajar con ellos bajo
+ * distintos algoritmos. El programa de prueba tendrá forma de menú, que
+ * interactúa con el usuario para ejecutar las distintas opciones
+ * posibles. Se hace uso del Recorrido en Profundidad para calcular las
+ * componentes conexas de los digrafos.
+ */ 
+ 
 #include <iostream>
 #include <string.h>
 #include <vector>
@@ -12,33 +30,12 @@ typedef void (*tfuncion)(); // Puntero a función que recibe 0 argumentos y no d
 static Grafo* g;
 static Menu<tfuncion> *menu;
 
-// Conjunto de funciones asociadas a cada posible opción del menu
-void CargarGrafo();
-void InfoGrafo();
-void VerSucesores();
-void VerPredecesores();
-void VerComponentesConexas();
+void RefreshMenu(string fname); // Recarga los items del menu, en función de si estamos ante un grafo dirigido o no
 
-// Recarga los items del menu, en función de si estamos ante un grafo dirigido o no
-void RefreshMenu(char fname[]){
-    string desc = "Grafo \"";
-    desc += fname;
-    desc += "\" abierto.";
-    menu->SetDescripcion(desc);
-    menu->ClearItems();
-    menu->AddItem("1 Cargar grafo desde un fichero", &CargarGrafo);
-    menu->AddItem("2 Mostrar informacion basica del grafo", &InfoGrafo);
-    if (g->dirigido == 0){
-        menu->AddItem("3 Mostrar lista de adyacencia del grafo", &VerSucesores);
-        menu->AddItem("4 Mostrar componentes conexas del grafo", &VerComponentesConexas);
-    }else if (g->dirigido == 1){
-        menu->AddItem("3 Mostrar lista de sucesores del grafo", &VerSucesores);
-        menu->AddItem("4 Mostrar lista de predecesores del grafo", &VerPredecesores);
-    }
-}
-// Conjunto de funciones asociadas a cada posible opción del menu
-void CargarGrafo(){
-    // Carga del fichero
+////////////////////////////////////////////////////////////////////
+// Conjunto de funciones asociadas a cada posible opción del menu //
+////////////////////////////////////////////////////////////////////
+void CargarGrafo(){ // Carga del fichero
     char fname[32];
     int openstatus;
     openstatus = 10;
@@ -53,7 +50,7 @@ void CargarGrafo(){
     }
     RefreshMenu(fname);
 }
-void InfoGrafo(){
+void InfoGrafo(){  // Información sobre el grafo
     if (g != NULL){
         cout << "Información del grafo:" << endl << endl;
         g->Info_Grafo();
@@ -61,7 +58,7 @@ void InfoGrafo(){
         cout << "[ERROR] NO hay ningún grafo cargado" << endl;
     }
 }
-void VerSucesores(){
+void VerSucesores(){  // Lista de sucesores
     if (g != NULL){
         g->dirigido ? cout << "Lista de sucesores del grafo:" : cout << "Lista de adyacencia del grafo:";
         cout << endl << endl;
@@ -70,7 +67,7 @@ void VerSucesores(){
         cout << "[ERROR] NO hay ningún grafo cargado" << endl;
     }
 }
-void VerPredecesores(){
+void VerPredecesores(){  // Lista de predecesores
     if (g != NULL){
         cout << "Lista de predecesores del grafo:" << endl << endl;
         g->ListaPredecesores();
@@ -79,7 +76,7 @@ void VerPredecesores(){
         cout << "[ERROR] NO hay ningún grafo cargado" << endl;
     }
 }
-void VerComponentesConexas(){
+void VerComponentesConexas(){  // Componentes conexas
     if (g != NULL){
         cout << "Componentes conexas del grafo:" << endl << endl;
         g->ComponentesConexas();
@@ -87,18 +84,27 @@ void VerComponentesConexas(){
         cout << "[ERROR] NO hay ningún grafo cargado" << endl;
     }
 }
-            
+
+// Recarga los items del menu, en función de si estamos ante un grafo dirigido o no
+void RefreshMenu(string fname){
+    string desc = "Grafo \"" + fname + "\" abierto.";
+    menu->SetDescripcion(desc);
+    menu->ClearItems();
+    menu->AddItem("1 Cargar grafo desde un fichero", &CargarGrafo);
+    menu->AddItem("2 Mostrar informacion basica del grafo", &InfoGrafo);
+    if (g->dirigido == 0){
+        menu->AddItem("3 Mostrar lista de adyacencia del grafo", &VerSucesores);
+        menu->AddItem("4 Mostrar componentes conexas del grafo", &VerComponentesConexas);
+    }else if (g->dirigido == 1){
+        menu->AddItem("3 Mostrar lista de sucesores del grafo", &VerSucesores);
+        menu->AddItem("4 Mostrar lista de predecesores del grafo", &VerPredecesores);
+    }
+}
         
 int main(){
-    // TODO: Hacer otro constructor para construir un menu pasándole sólo un item inicial
-    vector<const char*> items;
-    items.push_back("1 Cargar grafo desde un fichero");
-    vector<tfuncion> *funciones = new vector<tfuncion>;
-    funciones->push_back(&CargarGrafo);
-
-    string titulo = "OPTIMIZACION 2013 - Practica GRAFOS 1  --  Fernando G L-P";
-    string desc = "Ningún grafo abierto.";
-    menu = new Menu<tfuncion>(titulo, desc, items, funciones);
+    menu = new Menu<tfuncion>("OPTIMIZACION 2013 - Practica GRAFOS 1  --  Fernando G L-P", "Ningún grafo abierto.");
+    
+    menu->AddItem("1 Cargar grafo desde un fichero", &CargarGrafo);
     menu->Run();
         
     delete(menu);

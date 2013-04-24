@@ -1,3 +1,21 @@
+/*
+ * Asignatura: Optimización 2013 - Grado en Ingeniería Informática
+ * Actividad: Almacenamiento en la clase GRAFO (Práctica grafos 1)
+ * Autor: Fernando González López - Peñalver (alu0100256543)
+ * 
+ * Descripción:
+ * El objetivo de esta actividad es escribir un programa que gestione
+ * la carga de los datos de un grafo a partir de las estructuras de
+ * sucesores o predecesores, en el caso de los grafos dirigidos, y con
+ * las adyacencias, en el caso de los grafos no dirigidos. Usaremos la 
+ * clase GRAFO que, desde esta primera actividad, estará dotado de lo
+ * esencial para poder codificar los grafos y trabajar con ellos bajo
+ * distintos algoritmos. El programa de prueba tendrá forma de menú, que
+ * interactúa con el usuario para ejecutar las distintas opciones
+ * posibles. Se hace uso del Recorrido en Profundidad para calcular las
+ * componentes conexas de los digrafos.
+ */ 
+ 
 #include <stdint.h>
 #include <iostream>
 #include <fstream>
@@ -36,7 +54,6 @@ void Grafo::Mostrar_Listas(int l){
     }
 }
 
-
 // Comprueba si el vector de visitados está todo a "true".
 // Si no lo está devuelve la posición del primer elemento "false"
 // Si lo está devuelve -1
@@ -47,25 +64,27 @@ int TestVisitados(vector<bool> &visitados){
     }
     return -1;
 }
+
 // ComponentesConexas
 void Grafo::ComponentesConexas(){
     vector<bool> visitados(n, false);
-    vector<unsigned> conexas;
+    vector<unsigned> conexos;  // Nodos conexos
     unsigned nConexa = 1; // Numero de la componente conexa
-    int nextPos;
+    int nextNode; // Próximo nodo con el que iniciar el DFS
 
     // Mientras existan nodos sin visitar mostramos componentes conexas en pantalla
     // y llamamos al DFS para calcularlas
-    while ((nextPos = TestVisitados(visitados)) >= 0){
-        dfs(nextPos, visitados, conexas);
+    while ((nextNode = TestVisitados(visitados)) >= 0){
+        dfs(nextNode, visitados, conexos);
         cout << "Componente conexa " << nConexa << ": " << endl;
-        for (unsigned i = 0; i < conexas.size(); i++)
-            i < conexas.size() - 1 ? cout << conexas[i] + 1 << ", " : cout << conexas[i] + 1;  // Evitar poner ',' en el últimno
+        for (unsigned i = 0; i < conexos.size(); i++){  // Mostramos el vector de nodos conexos
+            cout << conexos[i] + 1;
+            i < conexos.size() - 1 ? cout << ", " : cout << ".";
+        }
         cout << endl;
-        conexas.clear();
+        conexos.clear();
         nConexa++;
     }
-
 }
 
 // DFS
@@ -88,7 +107,6 @@ void Grafo::ListaPredecesores(){
                 dummy.j = i;
                 LP[LS[i][j].j].push_back(dummy);
             }
-        
     }
 }
 
@@ -110,7 +128,7 @@ int Grafo::ParseFile(char nombrefichero[]){
         iss.open(nombrefichero);
         iss >> n >> m >> dirigido;  // Leemos la primera línea
         LS.resize(n);
-        for (uint8_t k = 0; k < m; k++){
+        for (uint8_t k = 0; k < m; k++){  // Leemos las 'm' aristas/arcos
             iss >> i >> j;
             dummy.j = j - 1;
             LS[i-1].push_back(dummy);
@@ -123,7 +141,7 @@ int Grafo::ParseFile(char nombrefichero[]){
         iss.close();
     }catch (ifstream::failure e){
         cerr << "Error abriendo el fichero " << nombrefichero << endl;
-        return UERROR;  // TODO: ¿Es este error?
+        return UERROR;
     }
     return NOERROR;
 }
@@ -136,8 +154,10 @@ void Grafo::MostrarLista(string symbol, const vector<LA_nodo> &lista){
             cout << "Ø" << endl;
         else{
             cout << "{";
-            for (uint16_t j = 0; j < lista[i].size(); j++)
-                j < lista[i].size() - 1 ? cout << lista[i][j].j+1 << "," : cout << lista[i][j].j+1 << "}" << endl;
+            for (uint16_t j = 0; j < lista[i].size(); j++){
+                cout << lista[i][j].j+1;
+                j < lista[i].size() - 1 ? cout << "," : cout << "}" << endl;
+            }
         }
     }
 }

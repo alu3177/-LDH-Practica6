@@ -1,21 +1,57 @@
+/*
+ * Autor: Fernando González López - Peñalver <aladaris@gmail.com>
+ * 
+ * Esta clase se encarga de mostrar/gestionar un menu simple. Éste se compone de
+ * una serie de elementos (items) y su función (puntero a función)
+ * asociada. El tipo de función asociada a cada opción se especifica en
+ * la plantilla al instanciar objetos de esta clase. Esto limita a que
+ * todas las funciones deben ser del mismo tipo (devolver el mismo tipo
+ * de dato y aceptar el mismo tipo, número y orden de parámetros).
+ * Es útil crear un tipo de dato para tal efecto:
+ *      typedef void (*tfuncion)(); // Puntero a función que recibe 0 argumentos y no devuelve nada
+ *      Menu<tfuncion> menu;
+ * 
+ * Al hacer uso de las bibliotecas 'ncurses' y 'menu', se requieren
+ * los parámetros '-lmenu' y '-lncurses' a la hora de compilar cualquier
+ * aplicación que haga uso.
+ * 
+ * makefile:
+ * 
+ * PFLAGS = -lmenu -lncurses
+ * (...)
+ * MAIN: $(OBJS)
+ *      $(CC) $(CDEBUG) $(CFLAGS) -o $(EXEC) $^ $(PFLAGS)
+*/
+
 #include <cstdlib>
 #include <curses.h>
 #include <menu.h>
+#include <string>
+#include <vector>
+#include <iostream>
 
 using namespace std;
 
-template <typename T>
+#ifndef MIMENU_H
+#define MIMENU_H
+
+template <typename T>  // 'T' espera un puntero a untipo de función
 class Menu{
     
   public:
+    // Constructor por defecto
+    Menu(){
+        string dumb;
+        init(dumb, dumb);
+    }
     // Constructor paramétrico
-    Menu(string title, string desc, const vector<const char*> &elems, vector<T>* &funcs){
-        titulo = title;
-        descripcion = desc;
+    Menu(string title, string desc, const vector<const char*> &elems, vector<T> &funcs){
+        init (title, desc);
         items = elems;
         LoadItems();
         funciones = funcs;
     }
+    Menu(string title, string desc){init(title, desc);}
     ~Menu(){
         UnloadItems();
         Close();
@@ -26,19 +62,23 @@ class Menu{
     // Borra el contenido de los vectores 'items' y 'funciones'
     void ClearItems(){
         items.clear();
-        funciones->clear();
+        funciones.clear();
     }
     // Añade un elemento y su función asociada a los vectores 'items' y 'funciones'
     void AddItem(const char item[], T funcion){
         UnloadItems();
         items.push_back(item);
-        funciones->push_back(funcion);
+        funciones.push_back(funcion);
         LoadItems();
     }
     // Establece el campo 'descripcion'
     void SetDescripcion(string desc){
         descripcion.clear();
         descripcion = desc;
+    }
+    void SetTitulo(string t){
+        titulo.clear();
+        titulo = t;
     }
     void Run(){
         unsigned key;
@@ -60,7 +100,7 @@ class Menu{
                 // Llamadas a las funciones asociadas a cada item
                 case '\n':
                     Close();
-                    funciones->at(item_index(current_item(my_menu)))();  // Ejecutamos la funcion asociada al item actual
+                    funciones[item_index(current_item(my_menu))]();  // Ejecutamos la funcion asociada al item actual
                     Pausa();
                     Show();
                     break;
@@ -70,11 +110,19 @@ class Menu{
     }
     
   private:
+    // Tareas comunes d elos constructores
+    void init(string title, string desc){
+        titulo = title;
+        descripcion = desc;
+        items.resize(0);
+        funciones.resize(0);
+    }
     // Carga 'items' en 'my_items'
     void LoadItems(){
         my_items = (ITEM **)calloc(items.size() + 1, sizeof(ITEM *));
-        for(int i = 0; i < items.size(); i++)
+        for(int i = 0; i < items.size(); i++){
             my_items[i] = new_item(items[i], " ");
+        }
         my_items[items.size()] = (ITEM *)NULL;
         my_menu = new_menu((ITEM **)my_items);
     }
@@ -113,11 +161,11 @@ class Menu{
 
     }
     
-    
     MENU*  my_menu;
     ITEM** my_items;
     vector<const char*> items;
-    vector<T>* funciones;
+    vector<T> funciones;
     string descripcion;
     string titulo;
 };
+#endif
