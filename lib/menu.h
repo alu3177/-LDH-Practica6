@@ -8,12 +8,11 @@
  * todas las funciones deben ser del mismo tipo (devolver el mismo tipo
  * de dato y aceptar el mismo tipo, número y orden de parámetros).
  * Es útil crear un tipo de dato para tal efecto:
- *      typedef void (*tfuncion)(); // Puntero a función que recibe 0 argumentos y no devuelve nada
+ *      typedef void (*tfuncion)(); // Puntero a función que recibe 0 argumentos y no devuelve nada (void)
  *      Menu<tfuncion> menu;
  * 
  * Al hacer uso de las bibliotecas 'ncurses' y 'menu', se requieren
- * los parámetros '-lmenu' y '-lncurses' a la hora de compilar cualquier
- * aplicación que haga uso.
+ * los parámetros '-lmenu' y '-lncurses' a la hora de compilar.
  * 
  * makefile:
  * 
@@ -35,7 +34,7 @@ using namespace std;
 #ifndef MIMENU_H
 #define MIMENU_H
 
-template <typename T>  // 'T' espera un puntero a untipo de función
+template <typename T>  // 'T' espera un puntero a un tipo de función
 class Menu{
     
   public:
@@ -163,8 +162,8 @@ class Menu{
     
     MENU*  my_menu;
     ITEM** my_items;
-    vector<const char*> items;
-    vector<T> funciones;
+    vector<const char*> items;  // Texto de los elementos
+    vector<T> funciones;  // Funciones asociadas a cada elemento
     string descripcion;
     string titulo;
 };
