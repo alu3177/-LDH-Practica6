@@ -4,14 +4,14 @@ CC = g++
 PFLAGS = -lmenu -lncurses
 CFLAGS = -ansi -pedantic
 CDEBUG = -g
-OBJS = pg1.o grafo.o
-MAIN = pg1
-EXEC = pg1
+OBJS = pg2.o grafo.o
+MAIN = pg2
+EXEC = pg2
 
 MAIN: $(OBJS)
 	$(CC) $(CDEBUG) $(CFLAGS) -o $(EXEC) $^ $(PFLAGS)
 
-main.o: pg1.cpp
+main.o: pg2.cpp
 	$(CC) $(CDEBUG) $(CFLAGS) -c $<
 
 grafo.o: lib/grafo.cpp lib/grafo.h
