@@ -188,9 +188,11 @@ void Grafo::Dijkstra() {
             }
         }
     }
-    //PrintVector(d);         // DEBUG
-    //PrintVector(pred);      // DEBUG
-    //PrintVector(permLabel); // DEBUG
+    #ifdef DEBUG
+        PrintVector(d);         // DEBUG
+        PrintVector(pred);      // DEBUG
+        PrintVector(permLabel); // DEBUG
+    #endif
     CaminosMinimos(s, d, pred);
 }
 
@@ -210,7 +212,7 @@ int Grafo::GetSmallerCost(){
 void Grafo::BellmanFordMoore(){  
     vector<int> d;
     vector<unsigned> pred;
-    unsigned s, numeromejoras = 0;
+    unsigned s;
     bool mejora;
     int sc = GetSmallerCost();
 
@@ -226,24 +228,27 @@ void Grafo::BellmanFordMoore(){
         mejora = false;
         for (unsigned i = 0; i < LS.size(); i++){
             for (unsigned j = 0; j < LS[i].size(); j++){
-                if (d[LS[i][j].j] > d[i] + LS[i][j].c){
-                    d[LS[i][j].j] = d[i] + LS[i][j].c;
-                    if (sc < 0) {
-                        if (d[LS[i][j].j] < (int)n*sc){
-                            cout << "Detectado ciclo negativo => No hay solución" << endl;
-                            return;
+                if (d[i] < MAXINT){  // No hay camino mayor que infinito + LS[i][j].c (nextline)
+                    if (d[LS[i][j].j] > d[i] + LS[i][j].c){
+                        d[LS[i][j].j] = d[i] + LS[i][j].c;
+                        if (sc < 0) {
+                            if (d[LS[i][j].j] <= (int)n*sc){
+                                cout << "Detectado ciclo negativo => No hay solución" << endl;
+                                return;
+                            }
                         }
+                        pred[LS[i][j].j] = i;
+                        mejora = true;
                     }
-                    pred[LS[i][j].j] = i;
-                    mejora = true;
-                    numeromejoras++;
                 }
             }
         }
-    } while ((numeromejoras < n) && (mejora == true));
+    } while(mejora);
 
-    //PrintVector(d);         // DEBUG
-    //PrintVector(pred);      // DEBUG
+    #ifdef DEBUG
+        PrintVector(d);         // DEBUG
+        PrintVector(pred);      // DEBUG
+    #endif
     CaminosMinimos(s, d, pred);
     
 }

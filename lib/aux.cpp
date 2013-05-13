@@ -65,7 +65,7 @@ void CaminosMinimos(unsigned s, vector<int> &d, vector<unsigned> &pred){
             ShowPath(s,i,pred,0,path);
             if (path != ""){
                 cout << path;
-                cout << ", Coste = ";
+                cout << "  ||   Coste = ";
                 d[i] < MAXINT ? cout << d[i] << endl : cout << "∞" << endl;
             } else {
                 cout << "No hay camino" << endl;
