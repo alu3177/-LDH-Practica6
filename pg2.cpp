@@ -95,12 +95,30 @@ void RefreshMenu(string fname){
 }
         
 int main(){
+    /*
     menu = new Menu<tfuncion>("OPTIMIZACION 2013 - Practica GRAFOS 1  --  Fernando G L-P", "Ningún grafo abierto.");
     
     menu->AddItem("1 Cargar grafo desde un fichero", &CargarGrafo);
     menu->Run();
         
     delete(menu);
+    */
+    //char fname[32];
+    int openstatus = 10;
+    //while (openstatus != NOERROR){
+    //    system("clear");
+    //    if (openstatus == UERROR)
+    //        cout << "Error al abrir el fichero \"" << fname << "\"" << endl;
+    //    cout << "Ruta del fichero de entrada: ";
+    //    cin >> fname;
+    //    delete(g);
+        g = new Grafo("grafos/grafo8.gr", openstatus);
+    //}
+
+    g->Mostrar_Listas(0);
+    g->Dijkstra();
+    g->BellmanFordMoore();
+
     delete(g);
     return(EXIT_SUCCESS);
 }

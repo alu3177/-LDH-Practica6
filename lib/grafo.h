@@ -36,12 +36,15 @@ class Grafo{
     void Mostrar_Listas(int l);
     void ListaPredecesores();
     void ComponentesConexas();
+    void Dijkstra();
+    void BellmanFordMoore();
     ~Grafo() { Clear(); }
   private:
     void Clear();
     int ParseFile(char nombrefichero[]);  // Devuelve el posible "errorapertura"
     void MostrarLista(string symbol, const vector<LA_nodo> &lista);
     void dfs(unsigned i, vector<bool> &visitado, vector<unsigned> &conexas);
+    int GetSmallerCost();
     // Atributos
     unsigned         n;   // Numero de nodos/vertices
     unsigned         m;   // Numero de arcos/aristas
