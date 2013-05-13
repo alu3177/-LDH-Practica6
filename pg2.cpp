@@ -78,6 +78,22 @@ void VerComponentesConexas(){  // Componentes conexas
     }
 }
 
+void VerDijkstra(){  // Dijkstra
+    if (g != NULL){
+        g->Dijkstra();
+    }else{
+        cout << "[ERROR] NO hay ningún grafo cargado" << endl;
+    }
+}
+
+void VerBellmanFordMoore(){  // Bellman-Ford-Moore
+    if (g != NULL){
+        g->BellmanFordMoore();
+    }else{
+        cout << "[ERROR] NO hay ningún grafo cargado" << endl;
+    }
+}
+
 // Recarga los items del menu, en función de si estamos ante un grafo dirigido o no
 void RefreshMenu(string fname){
     string desc = "Grafo \"" + fname + "\" abierto.";
@@ -91,34 +107,19 @@ void RefreshMenu(string fname){
     }else if (g->dirigido == 1){
         menu->AddItem("3 Mostrar lista de sucesores del grafo", &VerSucesores);
         menu->AddItem("4 Mostrar lista de predecesores del grafo", &VerPredecesores);
+        menu->AddItem("5 Ejecutar algoritmo de Dijkstra", &VerDijkstra);
+        menu->AddItem("6 Ejecutar algoritmo de Bellman-Ford-Moore", &VerBellmanFordMoore);
     }
 }
         
 int main(){
-    /*
-    menu = new Menu<tfuncion>("OPTIMIZACION 2013 - Practica GRAFOS 1  --  Fernando G L-P", "Ningún grafo abierto.");
+    
+    menu = new Menu<tfuncion>("OPTIMIZACION 2013 - Practica GRAFOS 2  --  Fernando G L-P", "Ningún grafo abierto.");
     
     menu->AddItem("1 Cargar grafo desde un fichero", &CargarGrafo);
     menu->Run();
-        
+
     delete(menu);
-    */
-    //char fname[32];
-    int openstatus = 10;
-    //while (openstatus != NOERROR){
-    //    system("clear");
-    //    if (openstatus == UERROR)
-    //        cout << "Error al abrir el fichero \"" << fname << "\"" << endl;
-    //    cout << "Ruta del fichero de entrada: ";
-    //    cin >> fname;
-    //    delete(g);
-        g = new Grafo("grafos/grafo8.gr", openstatus);
-    //}
-
-    g->Mostrar_Listas(0);
-    g->Dijkstra();
-    g->BellmanFordMoore();
-
     delete(g);
     return(EXIT_SUCCESS);
 }

@@ -12,8 +12,8 @@
 #include <stdint.h>
 #include <iostream>
 #include <fstream>
-#include <queue>
 #include "grafo.h"
+#include "aux.cpp"
 
 // Constructor
 Grafo::Grafo(char nombrefichero[], int &errorapertura){
@@ -158,83 +158,9 @@ void Grafo::MostrarLista(string symbol, const vector<LA_nodo> &lista){
         }
     }
 }
-
-/* CAMINOS MÍNIMOS */
-
-// DEBUG FUNCTIONS
-template <typename T>
-void PrintVector(vector<T> &v){
-    for (short unsigned i = 0; i < v.size(); i++){
-        cout << v[i];
-        (i < v.size() - 1) ? cout << ", " : cout << endl;
-    }
-}
-// DEBUG FUNCTIONS
-
-// Comprueba si todos los elementos del vector son iguales a 'value'
-template <typename T>
-bool AllSetTo(vector<T> &v, T value){
-    for (short unsigned i = 0; i < v.size(); i++)
-        if (v[i] != value)
-            return false;
-    return true;
-}
-
-
-
-// Devuelve el valor minimo encontrado en el vector
-template <typename T>
-T Getmin(vector<T> &v){
-    T min = MAXINT;
-    for (short unsigned i = 0; i < v.size(); i++)
-        if (v[i] < min)
-            min = v[i];
-    return min;
-}
-
-// Devuelve la posición del valor mínimo encontrado en el vector
-template <typename T>
-int GetminPos(vector<T> &v){
-    int min = MAXINT;
-    int pos = -1;
-    for (short unsigned i = 0; i < v.size(); i++)
-        if (v[i] < min){
-            min = v[i];
-            pos = i;
-        }
-    cout << "GetMinPos = " << pos << endl; // DEBUG
-    return pos;
-}
-
-// Devuelve la posición del valor mínimo encontrado en el vector
-// siempre y cuando no esté marcado como 'true' en el vector 'labels'
-template <typename T>
-int GetminPos(vector<T> &v, vector<bool> &labels){
-    int min = MAXINT;
-    int pos = -1;
-    for (short unsigned i = 0; i < v.size(); i++)
-        if ((v[i] < min) && (!labels[i])){
-            min = v[i];
-            pos = i;
-        }
-    //cout << "GetMinPos = " << pos << endl; // DEBUG
-    return pos;
-}
-
-void ShowPath(unsigned s, unsigned i, vector<unsigned> &pred, unsigned level = 0){
-    if (i != s){
-        if ((i < pred.size()) && (pred[i] < UERROR)){
-            ShowPath(s, pred[i], pred, level + 1);
-            cout << pred[i]+1 << " -> ";
-        }
-    }
-    if (level == 0)
-        if(pred[i] < UERROR)
-            cout << i + 1;
-        else
-            cout << "-";
-}
-
+/**********************************************************************/
+/************************* CAMINOS MÍNIMOS ****************************/
+/**********************************************************************/
 
 void Grafo::Dijkstra() {
     vector<bool> permLabel;  // Permanentemente etiquetados
@@ -243,55 +169,32 @@ void Grafo::Dijkstra() {
     int min;
     unsigned s, candidato;
 
-    //Inicialmente no hay ningun nodo permanentemente etiquetado
     permLabel.resize(n,false);
-    //Inicialmente todas las etiquetas distancias son infinito (MAXINT)
     d.resize(n,MAXINT);
-    //Inicialmente el pred es null
     pred.resize(n,UERROR);
-    //Solicitamos al usuario nodo origen
+
     cout << "Caminos minimos: Dijkstra" << endl;
     cout << "Nodo de partida? [1.."<< n << "]: ";
     cin >> (unsigned &) s;
-    //La etiqueta distancia del nodo origen es 0, y es su propio pred
     d[--s]=0; pred[s]=s;
 
     while ((!AllSetTo(permLabel, true)) && (GetminPos(d, permLabel) >= 0)){  // TODO: Evitar llamar dos veces a GetminPos. ¿Poner un do ... while?
         int i = GetminPos(d, permLabel); // Obtenemos el nodo (sin marcar) con menor valor d
         permLabel[i] = true;  // Lo marcamos
         for (unsigned j = 0; j < LS[i].size(); j++){
-            //cout << "d[" << LS[i][j].j << "] = " << d[LS[i][j].j] << " > " << "d[" << i << "] + LS[ " << i << "][" << j << "].c    " << d[i] << "+" << LS[i][j].c << endl; // DEBUG
             if ((d[LS[i][j].j] > d[i] + LS[i][j].c) && (!permLabel[LS[i][j].j])){
                 d[LS[i][j].j] = d[i] + LS[i][j].c;
                 pred[LS[i][j].j] = i;
             }
-            //cout << "d[" << LS[i][j].j << "] = " << d[LS[i][j].j] << " && " << "pred[" << LS[i][j].j << "] = " << pred[LS[i][j].j] << endl << endl; // DEBUG
         }
     }
-    PrintVector(d);         // DEBUG
-    PrintVector(pred);      // DEBUG
-    PrintVector(permLabel); // DEBUG
-    //En esta parte del código, mostramos los caminos mínimos, si los hay
-    cout << "Caminos mínimos:" << endl;
-    for (unsigned i = 0; i < pred.size(); i++){  // TODO: Estudia i = 1
-        cout << "[" << s+1 << " - " << i+1 << "] ";
-        ShowPath(s,i,pred);
-        //cout << i+1;  // TODO: No mostrar si no hay camino. Meter dentro de ShowPath, mostrar al salir de toda la recursividad
-        cout << ", Coste = ";
-        d[i] < MAXINT ? cout << d[i] << endl : cout << "∞" << endl;
-    }
+    //PrintVector(d);         // DEBUG
+    //PrintVector(pred);      // DEBUG
+    //PrintVector(permLabel); // DEBUG
+    CaminosMinimos(s, d, pred);
 }
 
-template <typename T>
-bool IsInQueue (queue<T> cola, T elem){
-    while (!cola.empty()){
-        if (cola.front() == elem)
-            return true;
-        cola.pop();
-    }
-    return false;
-}
-
+// Devuelve el valor del costo del arco/arista más negativo
 int Grafo::GetSmallerCost(){
     int result = MAXINT;
     
@@ -301,7 +204,6 @@ int Grafo::GetSmallerCost(){
                 result = LS[i][j].c;
         }
     }
-    
     return result;
 }
 
@@ -314,13 +216,13 @@ void Grafo::BellmanFordMoore(){
 
     d.resize(n,MAXINT);
     pred.resize(n,UERROR);
-    cout << endl;
+
     cout << "Caminos minimos: Bellman – Ford - Moore" << endl;
     cout << "Nodo de partida? [1-"<< n << "]: ";
     cin >> (unsigned &) s;
     d[--s]=0; pred[s]=s;
-    do
-    {
+    
+    do {
         mejora = false;
         for (unsigned i = 0; i < LS.size(); i++){
             for (unsigned j = 0; j < LS[i].size(); j++){
@@ -328,10 +230,6 @@ void Grafo::BellmanFordMoore(){
                     d[LS[i][j].j] = d[i] + LS[i][j].c;
                     if (sc < 0) {
                         if (d[LS[i][j].j] < (int)n*sc){
-                            //cout << i << ", " << LS[i][j].j << endl; // DEBUG
-                            //PrintVector(d);         // DEBUG
-                            //PrintVector(pred);      // DEBUG
-                            //cout << d[LS[i][j].j] << " < " << n << "*" << sc << "(" << (int)n*sc << ")" << endl; // DEBUG
                             cout << "Detectado ciclo negativo => No hay solución" << endl;
                             return;
                         }
@@ -344,16 +242,8 @@ void Grafo::BellmanFordMoore(){
         }
     } while ((numeromejoras < n) && (mejora == true));
 
-    PrintVector(d);         // DEBUG
-    PrintVector(pred);      // DEBUG
-    //En esta parte del código, mostramos los caminos mínimos, si los hay
-    cout << "Caminos mínimos:" << endl;
-    for (unsigned i = 0; i < pred.size(); i++){  // TODO: Estudia i = 1
-        cout << "[" << s+1 << " - " << i+1 << "] ";
-        ShowPath(s,i,pred);
-        //cout << i+1;  // TODO: No mostrar si no hay camino. Meter dentro de ShowPath, mostrar al salir de toda la recursividad
-        cout << ", Coste = ";
-        d[i] < MAXINT ? cout << d[i] << endl : cout << "∞" << endl;
-    }
+    //PrintVector(d);         // DEBUG
+    //PrintVector(pred);      // DEBUG
+    CaminosMinimos(s, d, pred);
     
 }

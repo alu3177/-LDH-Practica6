@@ -100,7 +100,7 @@ class Menu{
                 case '\n':
                     Close();
                     funciones[item_index(current_item(my_menu))]();  // Ejecutamos la funcion asociada al item actual
-                    Pausa();
+                    Pausa();//Pausa();
                     Show();
                     break;
             }
@@ -156,8 +156,8 @@ class Menu{
         int c;
         cout << endl << "Pulse enter para continuar..." << endl;
         fflush(stdout);
+        getchar();  // Evitar salir del Pausa si se ha presionado enter antes
         do c = getchar(); while((c != '\n') && (c != EOF));
-
     }
     
     MENU*  my_menu;
