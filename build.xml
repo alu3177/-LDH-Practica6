@@ -15,6 +15,10 @@
    </target>
    
    <target name="cppunit" description="Ejecuta las pruebas unitarias">
+       <exec executable="make" failonerror="true">
+           <arg value="test" />
+       </exec>
+       <exec executable="tests/runTests" />
    </target>
    
    <target name="compile" description="Compila el código y genera el ejecutable">

@@ -8,7 +8,7 @@ OBJS = pg2.o grafo.o
 MAIN = pg2
 EXEC = pg2
 TOBJS = grafo.o GrafoTest.o runTests.o
-TEXEC = tpg2
+TEXEC = tests/runTests
 TPFLAGS = -lcppunit
 
 MAIN: $(OBJS)
