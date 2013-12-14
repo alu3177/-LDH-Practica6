@@ -16,7 +16,7 @@
 #include "aux.cpp"
 
 // Constructor
-Grafo::Grafo(char nombrefichero[], int &errorapertura){
+Grafo::Grafo(const char nombrefichero[], int &errorapertura){
     errorapertura = ParseFile(nombrefichero);
 }
 
@@ -112,7 +112,7 @@ void Grafo::Clear(){
 }
 
 // ParseFile
-int Grafo::ParseFile(char nombrefichero[]){
+int Grafo::ParseFile(const char nombrefichero[]){
     ElementoLista dummy;
     unsigned i, j;
     int c;

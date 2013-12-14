@@ -30,7 +30,7 @@ typedef vector<ElementoLista> LA_nodo;
 class Grafo{
   public:
     unsigned        dirigido;
-    Grafo(char nombrefichero[], int &errorapertura);
+    Grafo(const char nombrefichero[], int &errorapertura);
     void Actualizar(char nombrefichero[], int &errorapertura);
     void Info_Grafo();
     void Mostrar_Listas(int l);
@@ -41,7 +41,7 @@ class Grafo{
     ~Grafo() { Clear(); }
   private:
     void Clear();
-    int ParseFile(char nombrefichero[]);  // Devuelve el posible "errorapertura"
+    int ParseFile(const char nombrefichero[]);  // Devuelve el posible "errorapertura"
     void MostrarLista(string symbol, const vector<LA_nodo> &lista);
     void dfs(unsigned i, vector<bool> &visitado, vector<unsigned> &conexas);
     int GetSmallerCost();
