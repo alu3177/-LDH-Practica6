@@ -1,0 +1,24 @@
+<project name="Dijkstra" default="build">
+
+   <target name="build" depends="cppcheck,cppunit,compile"/>
+   
+   <target name="cppcheck" description="Realiza un analisis estatico del codigo">
+       <exec executable="echo">
+           <arg value="Realizando analisis estatico [cppcheck]" />
+       </exec>
+       <exec executable="cppcheck" output="logs/cppcheck/result.xml">
+           <arg value="-j 4" />
+           <arg value="--xml-version=1" />
+           <arg value="."/>
+           <arg value="--quiet" />
+       </exec>
+   </target>
+   
+   <target name="cppunit" description="Ejecuta las pruebas unitarias">
+   </target>
+   
+   <target name="compile" description="Compila el código y genera el ejecutable">
+       <exec executable="make" failonerror="true"/>
+   </target>
+   
+</project>

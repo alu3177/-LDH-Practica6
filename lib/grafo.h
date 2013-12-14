@@ -1,20 +1,13 @@
 /*
  * Asignatura: Optimización 2013 - Grado en Ingeniería Informática
- * Actividad: Almacenamiento en la clase GRAFO (Práctica grafos 1)
+ * Actividad: Almacenamiento en la clase GRAFO (Práctica grafos 2)
  * Autor: Fernando González López - Peñalver (alu0100256543)
  * 
  * Descripción:
- * El objetivo de esta actividad es escribir un programa que gestione
- * la carga de los datos de un grafo a partir de las estructuras de
- * sucesores o predecesores, en el caso de los grafos dirigidos, y con
- * las adyacencias, en el caso de los grafos no dirigidos. Usaremos la 
- * clase GRAFO que, desde esta primera actividad, estará dotado de lo
- * esencial para poder codificar los grafos y trabajar con ellos bajo
- * distintos algoritmos. El programa de prueba tendrá forma de menú, que
- * interactúa con el usuario para ejecutar las distintas opciones
- * posibles. Se hace uso del Recorrido en Profundidad para calcular las
- * componentes conexas de los digrafos.
- */
+ *  Basandose en la clase implementada en la práctica anterior, implementar
+ *  los algoritmos de Dijkstra y Bellman-Ford-Moore para encontrar los
+ *  caminos mínimos en un digrafo.
+ */ 
  
 #include <vector>
 
@@ -43,12 +36,15 @@ class Grafo{
     void Mostrar_Listas(int l);
     void ListaPredecesores();
     void ComponentesConexas();
+    void Dijkstra();
+    void BellmanFordMoore();
     ~Grafo() { Clear(); }
   private:
     void Clear();
     int ParseFile(char nombrefichero[]);  // Devuelve el posible "errorapertura"
     void MostrarLista(string symbol, const vector<LA_nodo> &lista);
     void dfs(unsigned i, vector<bool> &visitado, vector<unsigned> &conexas);
+    int GetSmallerCost();
     // Atributos
     unsigned         n;   // Numero de nodos/vertices
     unsigned         m;   // Numero de arcos/aristas

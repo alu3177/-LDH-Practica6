@@ -1,25 +1,19 @@
 /*
  * Asignatura: Optimización 2013 - Grado en Ingeniería Informática
- * Actividad: Almacenamiento en la clase GRAFO (Práctica grafos 1)
+ * Actividad: Almacenamiento en la clase GRAFO (Práctica grafos 2)
  * Autor: Fernando González López - Peñalver (alu0100256543)
  * 
  * Descripción:
- * El objetivo de esta actividad es escribir un programa que gestione
- * la carga de los datos de un grafo a partir de las estructuras de
- * sucesores o predecesores, en el caso de los grafos dirigidos, y con
- * las adyacencias, en el caso de los grafos no dirigidos. Usaremos la 
- * clase GRAFO que, desde esta primera actividad, estará dotado de lo
- * esencial para poder codificar los grafos y trabajar con ellos bajo
- * distintos algoritmos. El programa de prueba tendrá forma de menú, que
- * interactúa con el usuario para ejecutar las distintas opciones
- * posibles. Se hace uso del Recorrido en Profundidad para calcular las
- * componentes conexas de los digrafos.
+ *  Basandose en la clase implementada en la práctica anterior, implementar
+ *  los algoritmos de Dijkstra y Bellman-Ford-Moore para encontrar los
+ *  caminos mínimos en un digrafo.
  */ 
  
 #include <stdint.h>
 #include <iostream>
 #include <fstream>
 #include "grafo.h"
+#include "aux.cpp"
 
 // Constructor
 Grafo::Grafo(char nombrefichero[], int &errorapertura){
@@ -121,6 +115,7 @@ void Grafo::Clear(){
 int Grafo::ParseFile(char nombrefichero[]){
     ElementoLista dummy;
     unsigned i, j;
+    int c;
     ifstream iss;
     
     iss.exceptions (ifstream::failbit | ifstream::badbit);
@@ -129,12 +124,14 @@ int Grafo::ParseFile(char nombrefichero[]){
         iss >> n >> m >> dirigido;  // Leemos la primera línea
         LS.resize(n);
         for (uint8_t k = 0; k < m; k++){  // Leemos las 'm' aristas/arcos
-            iss >> i >> j;
+            iss >> i >> j >> c;
             dummy.j = j - 1;
+            dummy.c = c;
             LS[i-1].push_back(dummy);
             // Adyacencia en no dirigidos, evitando duplicar información de ciclos
             if ((dirigido == 0) && (i != j)){
                 dummy.j = i -1;
+                dummy.c = c;
                 LS[j-1].push_back(dummy);
             }
         }
@@ -155,9 +152,103 @@ void Grafo::MostrarLista(string symbol, const vector<LA_nodo> &lista){
         else{
             cout << "{";
             for (uint16_t j = 0; j < lista[i].size(); j++){
-                cout << lista[i][j].j+1;
+                cout << lista[i][j].j+1 << "(" << lista[i][j].c << ")";
                 j < lista[i].size() - 1 ? cout << "," : cout << "}" << endl;
             }
         }
     }
+}
+/**********************************************************************/
+/************************* CAMINOS MÍNIMOS ****************************/
+/**********************************************************************/
+
+void Grafo::Dijkstra() {
+    vector<bool> permLabel;  // Permanentemente etiquetados
+    vector<int> d;
+    vector<unsigned> pred;
+    int min;
+    unsigned s, candidato;
+
+    permLabel.resize(n,false);
+    d.resize(n,MAXINT);
+    pred.resize(n,UERROR);
+
+    cout << "Caminos minimos: Dijkstra" << endl;
+    cout << "Nodo de partida? [1.."<< n << "]: ";
+    cin >> (unsigned &) s;
+    d[--s]=0; pred[s]=s;
+
+    while ((!AllSetTo(permLabel, true)) && (GetminPos(d, permLabel) >= 0)){  // TODO: Evitar llamar dos veces a GetminPos. ¿Poner un do ... while?
+        int i = GetminPos(d, permLabel); // Obtenemos el nodo (sin marcar) con menor valor d
+        permLabel[i] = true;  // Lo marcamos
+        for (unsigned j = 0; j < LS[i].size(); j++){
+            if ((d[LS[i][j].j] > d[i] + LS[i][j].c) && (!permLabel[LS[i][j].j])){
+                d[LS[i][j].j] = d[i] + LS[i][j].c;
+                pred[LS[i][j].j] = i;
+            }
+        }
+    }
+    #ifdef DEBUG
+        PrintVector(d);         // DEBUG
+        PrintVector(pred);      // DEBUG
+        PrintVector(permLabel); // DEBUG
+    #endif
+    CaminosMinimos(s, d, pred);
+}
+
+// Devuelve el valor del costo del arco/arista más negativo
+int Grafo::GetSmallerCost(){
+    int result = MAXINT;
+    
+    for (unsigned i = 0; i < LS.size(); i++){
+        for (unsigned j = 0; j < LS[i].size(); j++){
+            if (LS[i][j].c < result)
+                result = LS[i][j].c;
+        }
+    }
+    return result;
+}
+
+void Grafo::BellmanFordMoore(){  
+    vector<int> d;
+    vector<unsigned> pred;
+    unsigned s;
+    bool mejora;
+    int sc = GetSmallerCost();
+
+    d.resize(n,MAXINT);
+    pred.resize(n,UERROR);
+
+    cout << "Caminos minimos: Bellman – Ford - Moore" << endl;
+    cout << "Nodo de partida? [1-"<< n << "]: ";
+    cin >> (unsigned &) s;
+    d[--s]=0; pred[s]=s;
+    
+    do {
+        mejora = false;
+        for (unsigned i = 0; i < LS.size(); i++){
+            for (unsigned j = 0; j < LS[i].size(); j++){
+                if (d[i] < MAXINT){  // No hay camino mayor que infinito + LS[i][j].c (nextline)
+                    if (d[LS[i][j].j] > d[i] + LS[i][j].c){
+                        d[LS[i][j].j] = d[i] + LS[i][j].c;
+                        if (sc < 0) {
+                            if (d[LS[i][j].j] <= (int)n*sc){
+                                cout << "Detectado ciclo negativo => No hay solución" << endl;
+                                return;
+                            }
+                        }
+                        pred[LS[i][j].j] = i;
+                        mejora = true;
+                    }
+                }
+            }
+        }
+    } while(mejora);
+
+    #ifdef DEBUG
+        PrintVector(d);         // DEBUG
+        PrintVector(pred);      // DEBUG
+    #endif
+    CaminosMinimos(s, d, pred);
+    
 }

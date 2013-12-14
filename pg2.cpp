@@ -1,19 +1,12 @@
 /*
  * Asignatura: Optimización 2013 - Grado en Ingeniería Informática
- * Actividad: Almacenamiento en la clase GRAFO (Práctica grafos 1)
+ * Actividad: Almacenamiento en la clase GRAFO (Práctica grafos 2)
  * Autor: Fernando González López - Peñalver (alu0100256543)
  * 
  * Descripción:
- * El objetivo de esta actividad es escribir un programa que gestione
- * la carga de los datos de un grafo a partir de las estructuras de
- * sucesores o predecesores, en el caso de los grafos dirigidos, y con
- * las adyacencias, en el caso de los grafos no dirigidos. Usaremos la 
- * clase GRAFO que, desde esta primera actividad, estará dotado de lo
- * esencial para poder codificar los grafos y trabajar con ellos bajo
- * distintos algoritmos. El programa de prueba tendrá forma de menú, que
- * interactúa con el usuario para ejecutar las distintas opciones
- * posibles. Se hace uso del Recorrido en Profundidad para calcular las
- * componentes conexas de los digrafos.
+ *  Basandose en la clase implementada en la práctica anterior, implementar
+ *  los algoritmos de Dijkstra y Bellman-Ford-Moore para encontrar los
+ *  caminos mínimos en un digrafo.
  */ 
  
 #include <iostream>
@@ -85,6 +78,22 @@ void VerComponentesConexas(){  // Componentes conexas
     }
 }
 
+void VerDijkstra(){  // Dijkstra
+    if (g != NULL){
+        g->Dijkstra();
+    }else{
+        cout << "[ERROR] NO hay ningún grafo cargado" << endl;
+    }
+}
+
+void VerBellmanFordMoore(){  // Bellman-Ford-Moore
+    if (g != NULL){
+        g->BellmanFordMoore();
+    }else{
+        cout << "[ERROR] NO hay ningún grafo cargado" << endl;
+    }
+}
+
 // Recarga los items del menu, en función de si estamos ante un grafo dirigido o no
 void RefreshMenu(string fname){
     string desc = "Grafo \"" + fname + "\" abierto.";
@@ -98,15 +107,18 @@ void RefreshMenu(string fname){
     }else if (g->dirigido == 1){
         menu->AddItem("3 Mostrar lista de sucesores del grafo", &VerSucesores);
         menu->AddItem("4 Mostrar lista de predecesores del grafo", &VerPredecesores);
+        menu->AddItem("5 Ejecutar algoritmo de Dijkstra", &VerDijkstra);
+        menu->AddItem("6 Ejecutar algoritmo de Bellman-Ford-Moore", &VerBellmanFordMoore);
     }
 }
         
 int main(){
-    menu = new Menu<tfuncion>("OPTIMIZACION 2013 - Practica GRAFOS 1  --  Fernando G L-P", "Ningún grafo abierto.");
+    
+    menu = new Menu<tfuncion>("OPTIMIZACION 2013 - Practica GRAFOS 2  --  Fernando G L-P", "Ningún grafo abierto.");
     
     menu->AddItem("1 Cargar grafo desde un fichero", &CargarGrafo);
     menu->Run();
-        
+    
     delete(menu);
     delete(g);
     return(EXIT_SUCCESS);
