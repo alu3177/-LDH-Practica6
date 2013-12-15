@@ -21,8 +21,23 @@
        <exec executable="tests/runTests" />
    </target>
    
-   <target name="compile" description="Compila el código y genera el ejecutable">
+   <target name="compile" depends="clean" description="Compila el código y genera el ejecutable">
        <exec executable="make" failonerror="true"/>
+   </target>
+   
+   <target name="clean" description="Borra todos los ficheros generados">
+       <exec executable="rm">
+           <arg value="-f" />
+           <arg value="pg2.o" />
+           <arg value="grafo.o" />
+           <arg value="pg2" />
+           <arg value="grafo.o" />
+           <arg value="GrafoTest.o" />
+           <arg value="runTests.o" />
+           <arg value="tests/runTests" />
+           <arg value="logs/cppunit/testResults.xml" />
+           <arg value="logs/cppcheck/result.xml" />
+       </exec>
    </target>
    
 </project>
