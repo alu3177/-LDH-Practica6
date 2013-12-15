@@ -15,7 +15,10 @@ int main( int argc, char **argv){
     XmlOutputter xmlOutputter (&results, xmlout);
     
     controller.addListener(&results);
-    runner.addTest( GrafoTest::suite() );
+    vector<Test* > suiteOfTests = GrafoTest::suite()->getTests();
+    //for ()
+    for (unsigned int i = 0; i < suiteOfTests.size(); i++)
+        runner.addTest( suiteOfTests[i] );
     runner.run(controller);
     xmlOutputter.write();
     return 0;

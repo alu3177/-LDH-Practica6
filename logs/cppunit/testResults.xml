@@ -3,11 +3,17 @@
   <FailedTests></FailedTests>
   <SuccessfulTests>
     <Test id="1">
-      <Name>testConstructor</Name>
+      <Name>Test del Constructor</Name>
+    </Test>
+    <Test id="2">
+      <Name>Test métodos Getter</Name>
+    </Test>
+    <Test id="3">
+      <Name>Test resultado algoritmo Dijkstra</Name>
     </Test>
   </SuccessfulTests>
   <Statistics>
-    <Tests>1</Tests>
+    <Tests>3</Tests>
     <FailuresTotal>0</FailuresTotal>
     <Errors>0</Errors>
     <Failures>0</Failures>

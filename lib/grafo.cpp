@@ -17,6 +17,7 @@
 
 // Constructor
 Grafo::Grafo(const char nombrefichero[], int &errorapertura){
+    n = m = 0;
     errorapertura = ParseFile(nombrefichero);
 }
 
@@ -194,6 +195,29 @@ void Grafo::Dijkstra() {
         PrintVector(permLabel); // DEBUG
     #endif
     CaminosMinimos(s, d, pred);
+}
+
+minpaths* Grafo::Dijkstra(unsigned s) {
+    vector<bool> permLabel;  // Permanentemente etiquetados
+    vector<int> d;
+    vector<unsigned> pred;
+
+    permLabel.resize(n,false);
+    d.resize(n,MAXINT);
+    pred.resize(n,UERROR);
+    d[--s]=0; pred[s]=s;
+
+    while ((!AllSetTo(permLabel, true)) && (GetminPos(d, permLabel) >= 0)){
+        int i = GetminPos(d, permLabel); // Obtenemos el nodo (sin marcar) con menor valor d
+        permLabel[i] = true;  // Lo marcamos
+        for (unsigned j = 0; j < LS[i].size(); j++){
+            if ((d[LS[i][j].j] > d[i] + LS[i][j].c) && (!permLabel[LS[i][j].j])){
+                d[LS[i][j].j] = d[i] + LS[i][j].c;
+                pred[LS[i][j].j] = i;
+            }
+        }
+    }
+    return CaminosMinimosQuiet(s, d, pred);
 }
 
 // Devuelve el valor del costo del arco/arista más negativo

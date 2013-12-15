@@ -73,3 +73,23 @@ void CaminosMinimos(unsigned s, vector<int> &d, vector<unsigned> &pred){
         }
     }
 }
+
+// Recopila y muestra los caminos mínimos deducibles a partir de los vectores 'd' y 'pred'
+minpaths* CaminosMinimosQuiet(unsigned s, vector<int> &d, vector<unsigned> &pred){
+    minpaths* result = new vector< pair< pair<unsigned, unsigned>, unsigned > >();
+    //En esta parte del código, mostramos los caminos mínimos, si los hay
+    for (unsigned i = 0; i < pred.size(); i++){
+        if (i != s){  // No mostraremos el camino de un nodo a sí mismo
+            string path = "";
+            ShowPath(s,i,pred,0,path);
+            if (path != ""){
+                // Añadimos al resultado
+                pair<unsigned, unsigned> nodes(s+1, i+1);
+                unsigned cost = d[i];
+                pair<pair<unsigned, unsigned>, unsigned> elem(nodes, cost);
+                result->push_back(elem);
+            }
+        }
+    }
+    return result;
+}

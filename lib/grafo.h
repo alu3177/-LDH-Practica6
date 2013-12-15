@@ -26,17 +26,22 @@ typedef struct{
 } ElementoLista;
 
 typedef vector<ElementoLista> LA_nodo;
-
+typedef vector< pair< pair<unsigned, unsigned>, unsigned > > minpaths; // Estructura que representa el costo del camino de un nodo a otro
 class Grafo{
   public:
     unsigned        dirigido;
     Grafo(const char nombrefichero[], int &errorapertura);
+    // Getters
+    unsigned N() const { return n; }
+    unsigned M() const { return m; }
+    
     void Actualizar(char nombrefichero[], int &errorapertura);
     void Info_Grafo();
     void Mostrar_Listas(int l);
     void ListaPredecesores();
     void ComponentesConexas();
     void Dijkstra();
+    minpaths* Dijkstra(unsigned s);
     void BellmanFordMoore();
     ~Grafo() { Clear(); }
   private:
