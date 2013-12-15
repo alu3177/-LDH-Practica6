@@ -16,9 +16,7 @@ int main( int argc, char **argv){
     
     controller.addListener(&results);
     vector<Test* > suiteOfTests = GrafoTest::suite()->getTests();
-    //for ()
-    for (unsigned int i = 0; i < suiteOfTests.size(); i++)
-        runner.addTest( suiteOfTests[i] );
+    for (unsigned int i = 0; i < suiteOfTests.size(); runner.addTest( suiteOfTests[i++] ));
     runner.run(controller);
     xmlOutputter.write();
     return 0;

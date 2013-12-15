@@ -75,7 +75,6 @@ public:
         const unsigned costos[] = {10, 15, 11, 20, 11};
         minpaths* dijResult = goodGrafo->Dijkstra(1);
         for (unsigned int i = 0; i < dijResult->size(); i++){
-            //cout << costos[i] << ", " << dijResult->at(i).second << endl;  // DEBUG
             CPPUNIT_ASSERT_EQUAL(costos[i], dijResult->at(i).second);
         }
         
