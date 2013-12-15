@@ -22,7 +22,6 @@
        </exec>
        <exec executable="cppcheck" output="logs/cppcheck/result.xml">
            <arg value="-j 4" />
-           <arg value="--xml-version=1" />
            <arg value="."/>
            <arg value="--quiet" />
        </exec>
