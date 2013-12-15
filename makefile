@@ -24,7 +24,7 @@ grafo.o: lib/grafo.cpp lib/grafo.h
 
 clean:
 	rm -f $(OBJS) $(EXEC) $@
-	rm -f $(TOBJS) $(TEXEC) $@
+	rm -f $(TOBJS) $@
 
 
 runTests.o: tests/runTests.cpp
