@@ -1,13 +1,20 @@
 <project name="Dijkstra" default="build">
 
-   <target name="build" depends="clean,cppcheck,cppunit,compile"/>
-   
-   <target name="cppcheck" description="Realiza un analisis estatico del codigo">
-       <exec executable="echo">
-           <arg value="Realizando analisis estatico [cppcheck]" />
+   <target name="build" depends="clean,prepare,cppcheck,cppunit,compile"/>
+   <target name="prepare" description="Prepara el WorkSpace">
+       <exec executable="mkdir">
+           <arg value="logs" />
+           <arg value="logs/cppcheck" />
+           <arg value="logs/cppunit" />
        </exec>
        <exec executable="touch">
            <arg value="logs/cppcheck/result.xml" />
+           <arg value="logs/cppunit/testResults.xml" />
+       </exec>
+   </target>
+   <target name="cppcheck" description="Realiza un analisis estatico del codigo">
+       <exec executable="echo">
+           <arg value="Realizando analisis estatico [cppcheck]" />
        </exec>
        <exec executable="cppcheck" output="logs/cppcheck/result.xml">
            <arg value="-j 4" />
