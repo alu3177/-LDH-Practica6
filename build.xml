@@ -1,6 +1,6 @@
 <project name="Dijkstra" default="build">
 
-   <target name="build" depends="cppcheck,cppunit,compile"/>
+   <target name="build" depends="clean,cppcheck,cppunit,compile"/>
    
    <target name="cppcheck" description="Realiza un analisis estatico del codigo">
        <exec executable="echo">
