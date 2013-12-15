@@ -9,7 +9,7 @@ MAIN = pg2
 EXEC = pg2
 TOBJS = grafo.o GrafoTest.o runTests.o
 TEXEC = tests/runTests
-TPFLAGS = -lcppunit
+TPFLAGS = -static -lcppunit
 
 MAIN: $(OBJS)
 	$(CC) $(CDEBUG) $(CFLAGS) -o $(EXEC) $^ $(PFLAGS)
