@@ -6,6 +6,9 @@
        <exec executable="echo">
            <arg value="Realizando analisis estatico [cppcheck]" />
        </exec>
+       <exec executable="touch">
+           <arg value="logs/cppcheck/result.xml" />
+       </exec>
        <exec executable="cppcheck" output="logs/cppcheck/result.xml">
            <arg value="-j 4" />
            <arg value="--xml-version=1" />
