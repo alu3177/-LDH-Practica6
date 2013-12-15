@@ -32,7 +32,7 @@
        <exec executable="make" failonerror="false">
            <arg value="test" />
        </exec>
-       <exec executable="tests/runTests" />
+       <exec executable="tests/runTests" failonerror="false"/>
    </target>
    
    <target name="compile" depends="clean" description="Compila el código y genera el ejecutable">
@@ -40,15 +40,11 @@
    </target>
    
    <target name="clean" description="Borra todos los ficheros generados">
+       <exec executable="make" failonerror="false">
+           <arg value="clean" />
+       </exec>
        <exec executable="rm">
            <arg value="-f" />
-           <arg value="pg2.o" />
-           <arg value="grafo.o" />
-           <arg value="pg2" />
-           <arg value="grafo.o" />
-           <arg value="GrafoTest.o" />
-           <arg value="runTests.o" />
-           <arg value="tests/runTests" />
            <arg value="logs/cppunit/testResults.xml" />
            <arg value="logs/cppcheck/result.xml" />
        </exec>
