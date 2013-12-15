@@ -11,6 +11,10 @@
            <arg value="logs/cppcheck/result.xml" />
            <arg value="logs/cppunit/testResults.xml" />
        </exec>
+       <exec executable="chmod">
+           <arg value="+x" />
+           <arg value="tests/runTests" />
+       </exec>
    </target>
    <target name="cppcheck" description="Realiza un analisis estatico del codigo">
        <exec executable="echo">
